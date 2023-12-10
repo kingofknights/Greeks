@@ -4,8 +4,8 @@
 
 #include "IVCalculator/Model2.h"
 
-double Greeks::GetDelta(double S, double K, double v, double r, double T, const bool IsCall) {
-    return call_delta(S, K, r, v, T) - (not IsCall);
+double Greeks::GetDelta(double S, double K, double v, double r, double T, bool IsCall) {
+    return delta(S, K, r, v, T) - (not IsCall);
 }
 
 double Greeks::GetGamma(double s, double k, double v, double r, double t, [[maybe_unused]] bool IsCall) {
@@ -34,7 +34,7 @@ double Greeks::GetTheta(double s, double k, double v, double r, double t, bool I
 }
 
 double Greeks::GetIV(double S, double K, double r, double T, double P, bool IsCE) {
-    return option_price_implied_volatility_call_black_scholes_newton(S, K, r, T, P, IsCE);
+    return option_price(S, K, r, T, P, IsCE);
 }
 
 double Greeks::GetOptionPrice(double s, double k, double v, double r, double t, bool IsCall) {
