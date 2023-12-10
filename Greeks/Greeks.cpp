@@ -4,7 +4,7 @@
 
 #include "IVCalculator/Model2.h"
 
-double Greeks::GetDelta(double s, double k, double v, double r, double t, bool IsCall) {
+double Greeks::GetDelta(double s, double k, double v, double r, double t, const bool IsCall) {
     if (IsCall) {
         return CallDelta(s, k, t, r, v, 0);
     } else {
@@ -14,17 +14,17 @@ double Greeks::GetDelta(double s, double k, double v, double r, double t, bool I
 
 double Greeks::GetGamma(double s, double k, double v, double r, double t, bool iscall) {
     if (iscall) {
-        return call_gamma(s, k, r, v, t) * 100.0F;
+        return call_gamma(s, k, r, v, t) * 100.0;
     } else {
-        return put_gamma(s, k, r, v, t) * 100.0F;
+        return put_gamma(s, k, r, v, t) * 100.0;
     }
 }
 
 double Greeks::GetVega(double s, double k, double v, double r, double t, bool iscall) {
     if (iscall) {
-        return call_vega(s, k, r, v, t) / 10000.0F;
+        return call_vega(s, k, r, v, t) / 10000.0;
     } else {
-        return put_vega(s, k, r, v, t) / 10000.0F;
+        return put_vega(s, k, r, v, t) / 10000.0;
     }
 }
 
@@ -57,9 +57,9 @@ double Greeks::GetOptionPrice(double s, double k, double v, double r, double t, 
 }
 
 double Greeks::GetExpiryGap(uint32_t Time) {
-    const auto	 Cur_time = time(nullptr);
-    const double expiry	  = Time + 3600;
-    const double diff	  = (expiry + 315513000L - Cur_time);
-    auto		 gap	  = diff / (252.0 * 24.0 * 60.0 * 60.0);
+    const long Cur_time = time(nullptr);
+    const long expiry   = Time + 3600;
+    const long diff     = (expiry + 315513000L - Cur_time);
+    double         gap      = static_cast<double>(diff) / (252.0 * 24.0 * 60.0 * 60.0);
     return gap;
 }

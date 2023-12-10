@@ -20,6 +20,6 @@ double GetOptionPrice(double s, double k, double v, double r, double t, bool IsC
 
 double GetExpiryGap(uint32_t Time);
 
-}  // namespace Greeks
+}// namespace Greeks
 
-#endif	// GREEKS_HPP
+#endif// GREEKS_HPP
