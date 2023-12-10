@@ -4,28 +4,17 @@
 
 #include "IVCalculator/Model2.h"
 
-double Greeks::GetDelta(double s, double k, double v, double r, double t, const bool IsCall) {
-    if (IsCall) {
-        return CallDelta(s, k, t, r, v, 0);
-    } else {
-        return PutDelta(s, k, t, r, v, 0);
-    }
+double Greeks::GetDelta(double S, double K, double v, double r, double T, const bool IsCall) {
+    return call_delta(S, K, r, v, T) - (not IsCall);
 }
 
-double Greeks::GetGamma(double s, double k, double v, double r, double t, bool iscall) {
-    if (iscall) {
-        return call_gamma(s, k, r, v, t) * 100.0;
-    } else {
-        return put_gamma(s, k, r, v, t) * 100.0;
-    }
+double Greeks::GetGamma(double s, double k, double v, double r, double t, [[maybe_unused]] bool IsCall) {
+    // Identical to call by put-call parity
+    return gamma(s, k, r, v, t) * 100.0;
 }
 
-double Greeks::GetVega(double s, double k, double v, double r, double t, bool iscall) {
-    if (iscall) {
-        return call_vega(s, k, r, v, t) / 10000.0;
-    } else {
-        return put_vega(s, k, r, v, t) / 10000.0;
-    }
+double Greeks::GetVega(double s, double k, double v, double r, double t, [[maybe_unused]] bool IsCall) {
+    return vega(s, k, r, v, t) / 10000.0;
 }
 
 double Greeks::GetRho(double s, double k, double v, double r, double t, bool IsCall) {
@@ -60,6 +49,6 @@ double Greeks::GetExpiryGap(uint32_t Time) {
     const long Cur_time = time(nullptr);
     const long expiry   = Time + 3600;
     const long diff     = (expiry + 315513000L - Cur_time);
-    double         gap      = static_cast<double>(diff) / (252.0 * 24.0 * 60.0 * 60.0);
+    double     gap      = static_cast<double>(diff) / (252.0 * 24.0 * 60.0 * 60.0);
     return gap;
 }
