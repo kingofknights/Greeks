@@ -2,7 +2,7 @@
 
 #include <ctime>
 
-#include "IVCalculator/Model2.h"
+#include "IVCalculator/Model2.hpp"
 
 double Greeks::GetDelta(double S, double K, double v, double r, double T, bool IsCall) {
     return delta(S, K, r, v, T) - (not IsCall);

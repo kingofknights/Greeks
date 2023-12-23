@@ -1,4 +1,4 @@
-#include "Model2.h"
+#include "Model2.hpp"
 
 #define _USE_MATH_DEFINES
 
