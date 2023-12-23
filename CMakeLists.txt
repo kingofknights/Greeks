@@ -23,7 +23,6 @@ endif ()
 
 
 # enable cache system
-set(ENABLE_CACHE OFF)
 include(cmake/Cache.cmake)
 
 # standard compiler warnings
