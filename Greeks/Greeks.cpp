@@ -49,6 +49,6 @@ double Greeks::GetExpiryGap(uint32_t Time) {
     const long Cur_time = time(nullptr);
     const long expiry   = Time + 3600;
     const long diff     = (expiry + 315513000L - Cur_time);
-    double     gap      = static_cast<double>(diff) / (252.0 * 24.0 * 60.0 * 60.0);
+    double     gap      = static_cast<double>(diff) / (365.25 * 24.0 * 60.0 * 60.0);
     return gap;
 }
