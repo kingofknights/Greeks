@@ -4,22 +4,22 @@
 #include <cstdint>
 
 namespace Greeks {
-double GetDelta(double S, double K, double v, double r, double T, bool IsCall);
+    auto GetDelta(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double;
 
-double GetGamma(double S, double K, double v, double r, double T, bool IsCall);
+    auto GetGamma(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double;
 
-double GetVega(double S, double K, double v, double r, double T, bool IsCall);
+    auto GetVega(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double;
 
-double GetRho(double S, double K, double v, double r, double T, bool IsCall);
+    auto GetRho(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double;
 
-double GetTheta(double S, double K, double v, double r, double T, bool IsCall);
+    auto GetTheta(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double;
 
-double GetIV(double s, double K, double r, double t, double p, bool IsCall);
+    auto GetIV(double spot_, double strike_, double rate_, double timeToExpire_, double optionPrice_, bool IsCall_) -> double;
 
-double GetOptionPrice(double S, double K, double v, double r, double t, bool IsCall);
+    auto GetOptionPrice(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double;
 
-double GetExpiryGap(uint32_t Time);
+    auto GetExpiryGap(uint32_t time_) -> double;
 
-}// namespace Greeks
+}  // namespace Greeks
 
-#endif// GREEKS_HPP
+#endif  // GREEKS_HPP

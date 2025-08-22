@@ -1,53 +1,49 @@
 #include "Greeks.hpp"
 
-#include <ctime>
-
 #include "IVCalculator/Model2.hpp"
 
-double Greeks::GetDelta(double S, double K, double v, double r, double T, bool IsCall) {
-    return delta(S, K, r, v, T) - (not IsCall);
+#include <ctime>
+
+auto Greeks::GetDelta(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double {
+    return Delta(spot_, strike_, rate_, volatility_, timeToExpire_) - static_cast<double>(not IsCall_);
 }
 
-double Greeks::GetGamma(double s, double k, double v, double r, double t, [[maybe_unused]] bool IsCall) {
-    // Identical to call by put-call parity
-    return gamma(s, k, r, v, t) * 100.0;
+auto Greeks::GetGamma(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, [[maybe_unused]] bool IsCall_) -> double {
+    return Gamma(spot_, strike_, rate_, volatility_, timeToExpire_) * 100.0;
 }
 
-double Greeks::GetVega(double s, double k, double v, double r, double t, [[maybe_unused]] bool IsCall) {
-    return vega(s, k, r, v, t) / 10000.0;
+auto Greeks::GetVega(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, [[maybe_unused]] bool IsCall_) -> double {
+    return Vega(spot_, strike_, rate_, volatility_, timeToExpire_) / 10000.0;
 }
 
-double Greeks::GetRho(double s, double k, double v, double r, double t, bool IsCall) {
-    if (IsCall) {
-        return call_rho(s, k, r, v, t);
-    } else {
-        return put_rho(s, k, r, v, t);
+auto Greeks::GetRho(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double {
+    if (IsCall_) {
+        return CallRho(spot_, strike_, rate_, volatility_, timeToExpire_);
     }
+    return PutRho(spot_, strike_, rate_, volatility_, timeToExpire_);
 }
 
-double Greeks::GetTheta(double s, double k, double v, double r, double t, bool IsCall) {
-    if (IsCall) {
-        return call_theta(s, k, r, v, t) / 36500.0;
-    } else {
-        return put_theta(s, k, r, v, t) / 36500.0;
+auto Greeks::GetTheta(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double {
+    if (IsCall_) {
+        return CallTheta(spot_, strike_, rate_, volatility_, timeToExpire_) / 36500.0;
     }
+    return PutTheta(spot_, strike_, rate_, volatility_, timeToExpire_) / 36500.0;
 }
 
-double Greeks::GetIV(double S, double K, double r, double T, double P, bool IsCE) {
-    return option_price(S, K, r, T, P, IsCE);
+auto Greeks::GetIV(double spot_, double strike_, double rate_, double timeToExpire_, double optionPrice_, bool IsCall_) -> double {
+    return ImpliedVol(spot_, strike_, rate_, timeToExpire_, optionPrice_, IsCall_);
 }
 
-double Greeks::GetOptionPrice(double s, double k, double v, double r, double t, bool IsCall) {
-    if (IsCall) {
-        return call_price(s, k, r, v, t);
-    } else {
-        return put_price(s, k, r, v, t);
+auto Greeks::GetOptionPrice(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double {
+    if (IsCall_) {
+        return CallPrice(spot_, strike_, rate_, volatility_, timeToExpire_);
     }
+    return PutPrice(spot_, strike_, rate_, volatility_, timeToExpire_);
 }
 
-double Greeks::GetExpiryGap(uint32_t Time) {
-    const long Cur_time = time(nullptr);
-    const long diff     = (Time - Cur_time);
-    double     gap      = static_cast<double>(diff) / (365.25 * 24.0 * 60.0 * 60.0);
+auto Greeks::GetExpiryGap(uint32_t time_) -> double {
+    const long   curTime = time(nullptr);
+    const long   diff    = (time_ - curTime);
+    const double gap     = static_cast<double>(diff) / (365.25 * 24.0 * 60.0 * 60.0);
     return gap;
 }
