@@ -23,17 +23,37 @@ namespace {
 
     template <typename Function>
     auto ImpliedVolatility(Function func_, double spot_, double strike_, double rate_, double timeToExpire_, double optionPrice_) -> double {
-        double high = 5;
-        double low  = 0;
-        double mid  = (high + low) / 2.0;
-        do {
-            if (func_(spot_, strike_, rate_, mid, timeToExpire_) > optionPrice_) {
+        if (spot_ <= 0.0 || strike_ <= 0.0 || timeToExpire_ <= 0.0 || optionPrice_ <= 0.0) {
+            return 0.0;
+        }
+
+        // Intrinsic value boundary check (at sigma -> 0)
+        double minPrice = func_(spot_, strike_, rate_, 1e-7, timeToExpire_);
+        if (optionPrice_ <= minPrice) {
+            return 0.0;
+        }
+
+        double low  = 0.0;
+        double high = 5.0;
+
+        // Adaptive bracket expansion: handles extreme volatility (up to 2000% IV)
+        while (high <= 20.0 && func_(spot_, strike_, rate_, high, timeToExpire_) < optionPrice_) {
+            high *= 2.0;
+        }
+
+        double mid = (high + low) / 2.0;
+        for (int i = 0; i < 64; ++i) {
+            double price = func_(spot_, strike_, rate_, mid, timeToExpire_);
+            if (std::abs(price - optionPrice_) < 1e-6 || (high - low) < 1e-10) {
+                break;
+            }
+            if (price > optionPrice_) {
                 high = mid;
             } else {
                 low = mid;
             }
             mid = (high + low) / 2.0;
-        } while ((high - low) > 0.0001);
+        }
 
         return mid;
     }
@@ -87,7 +107,7 @@ using FunctionListT            = double (*)(double spot_, double strike_, double
 constexpr FunctionListT List[] = {PutPrice, CallPrice};
 
 auto ImpliedVol(double spot_, double strike_, double rate_, double timeToExpire_, double optionPrice_, bool isCall_) -> double {
-    if (spot_ <= 0) {
+    if (spot_ <= 0.0 || strike_ <= 0.0 || timeToExpire_ <= 0.0 || optionPrice_ <= 0.0) {
         return 0.0;
     }
     return ImpliedVolatility(List[isCall_], spot_, strike_, rate_, timeToExpire_, optionPrice_);

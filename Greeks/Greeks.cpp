@@ -9,25 +9,28 @@ auto Greeks::GetDelta(double spot_, double strike_, double volatility_, double r
 }
 
 auto Greeks::GetGamma(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, [[maybe_unused]] bool IsCall_) -> double {
-    return Gamma(spot_, strike_, rate_, volatility_, timeToExpire_) * 100.0;
+    return Gamma(spot_, strike_, rate_, volatility_, timeToExpire_);
 }
 
 auto Greeks::GetVega(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, [[maybe_unused]] bool IsCall_) -> double {
-    return Vega(spot_, strike_, rate_, volatility_, timeToExpire_) / 10000.0;
+    // Standard Vega: price change per 1% change in volatility
+    return Vega(spot_, strike_, rate_, volatility_, timeToExpire_) / 100.0;
 }
 
 auto Greeks::GetRho(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double {
+    // Standard Rho: price change per 1% change in interest rate
     if (IsCall_) {
-        return CallRho(spot_, strike_, rate_, volatility_, timeToExpire_);
+        return CallRho(spot_, strike_, rate_, volatility_, timeToExpire_) / 100.0;
     }
-    return PutRho(spot_, strike_, rate_, volatility_, timeToExpire_);
+    return PutRho(spot_, strike_, rate_, volatility_, timeToExpire_) / 100.0;
 }
 
 auto Greeks::GetTheta(double spot_, double strike_, double volatility_, double rate_, double timeToExpire_, bool IsCall_) -> double {
+    // Standard Daily Theta: price decay per calendar day (annual theta / 365.25)
     if (IsCall_) {
-        return CallTheta(spot_, strike_, rate_, volatility_, timeToExpire_) / 36500.0;
+        return CallTheta(spot_, strike_, rate_, volatility_, timeToExpire_) / 365.25;
     }
-    return PutTheta(spot_, strike_, rate_, volatility_, timeToExpire_) / 36500.0;
+    return PutTheta(spot_, strike_, rate_, volatility_, timeToExpire_) / 365.25;
 }
 
 auto Greeks::GetIV(double spot_, double strike_, double rate_, double timeToExpire_, double optionPrice_, bool IsCall_) -> double {
